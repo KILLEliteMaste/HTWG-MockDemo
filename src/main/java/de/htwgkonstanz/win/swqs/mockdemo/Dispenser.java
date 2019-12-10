@@ -1,4 +1,4 @@
-package de.htwgkonstanz.win.swqs;
+package de.htwgkonstanz.win.swqs.mockdemo;
 
 public interface Dispenser {
     public boolean checkItem(int item);

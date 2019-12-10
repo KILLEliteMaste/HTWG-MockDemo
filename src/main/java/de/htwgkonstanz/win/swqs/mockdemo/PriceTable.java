@@ -1,4 +1,4 @@
-package de.htwgkonstanz.win.swqs;
+package de.htwgkonstanz.win.swqs.mockdemo;
 
 import java.math.BigDecimal;
 

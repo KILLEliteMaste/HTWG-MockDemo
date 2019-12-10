@@ -1,4 +1,4 @@
-package de.htwgkonstanz.win.swqs;
+package de.htwgkonstanz.win.swqs.mockdemo;
 
 import org.junit.Before;
 import org.junit.Test;
