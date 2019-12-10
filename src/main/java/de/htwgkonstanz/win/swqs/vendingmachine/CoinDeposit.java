@@ -1,4 +1,4 @@
-package de.htwgkonstanz.win.swqs.mockdemo;
+package de.htwgkonstanz.win.swqs.vendingmachine;
 
 import java.math.BigDecimal;
 

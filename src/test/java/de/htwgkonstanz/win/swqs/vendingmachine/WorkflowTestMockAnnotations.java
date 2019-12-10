@@ -1,4 +1,4 @@
-package de.htwgkonstanz.win.swqs.mockdemo;
+package de.htwgkonstanz.win.swqs.vendingmachine;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class WorkflowTest {
+public class WorkflowTestMockAnnotations {
 
     @Mock
     CoinDeposit c;
@@ -25,14 +25,14 @@ public class WorkflowTest {
 
     @Before
     public void setup() {
-       w = new Workflow(d, c, p);
         when(d.checkItem(eq(1))).thenReturn(false);
         when(d.checkItem(eq(2))).thenReturn(true);
         when(p.getPrice(anyInt())).thenReturn(new BigDecimal("1"));
+        w = new Workflow(d, c, p);
     }
 
     @Test
-    public void selectCase1() {
+    public void selectWithChange() {
         //setup
         w.coinsIn(new BigDecimal("2"));
 
@@ -42,11 +42,11 @@ public class WorkflowTest {
         // verify
         verify(c).dispenseCoins(new BigDecimal(1));
         verify(d).dispenseItem(2);
-        assertEquals(0,code);
+        assertEquals(0, code);
     }
 
     @Test
-    public void selectCase2() {
+    public void selectEmpty() {
         // Setup
         w.coinsIn(new BigDecimal("1"));
 
@@ -54,11 +54,11 @@ public class WorkflowTest {
         int code = w.select(1);
 
         // verify
-        assertEquals(-1,code);
+        assertEquals(-2, code);
     }
 
     @Test
-    public void selectCase3() {
+    public void selectNotEnoughMoney() {
         // Setup
         w.coinsIn(new BigDecimal("0.5"));
 
@@ -66,11 +66,11 @@ public class WorkflowTest {
         int code = w.select(2);
 
         // verify
-        assertEquals(-2,code);
+        assertEquals(-1, code);
     }
 
     @Test
-    public void selectCase4() {
+    public void selectCaseNoChange() {
         // Setup
         w.coinsIn(new BigDecimal("1"));
 
@@ -78,8 +78,21 @@ public class WorkflowTest {
         int code = w.select(2);
 
         // verify
-        verify(c,never()).dispenseCoins(any(BigDecimal.class));
+        verify(c, never()).dispenseCoins(any(BigDecimal.class));
         verify(d).dispenseItem(2);
-        assertEquals(0,code);
+        assertEquals(0, code);
+    }
+
+    @Test
+    public void cancel() {
+        // Setup
+        w.coinsIn(new BigDecimal("1"));
+
+        // execute
+        w.cancel();
+
+        // verify
+        verify(c, times(1)).dispenseCoins(new BigDecimal("1"));
+        verify(d, never()).dispenseItem(anyInt());
     }
 }
