@@ -1,17 +1,16 @@
 package de.htwgkonstanz.win.swqs.vendingmachine;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
+
 
 import java.math.BigDecimal;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
 public class WorkflowTestMockAnnotations {
 
     @Mock
@@ -23,8 +22,9 @@ public class WorkflowTestMockAnnotations {
 
     Workflow w;
 
-    @Before
+    @BeforeEach
     public void setup() {
+        MockitoAnnotations.openMocks(this);
         when(d.checkItem(eq(1))).thenReturn(false);
         when(d.checkItem(eq(2))).thenReturn(true);
         when(p.getPrice(anyInt())).thenReturn(new BigDecimal("1"));
