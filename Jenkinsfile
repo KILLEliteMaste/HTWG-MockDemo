@@ -3,7 +3,6 @@ pipeline {
     tools {
         maven 'Maven'
         jdk 'JDK 11'
-        scannerHome 'SonarQube Scanner'
     }
     stages {
         // Run unit test in all cases
@@ -21,6 +20,9 @@ pipeline {
             }
         }
         stage('SonarQube analysis') {
+             environment {
+                scannerHome = tool 'SonarQubeScanner'
+            }
             steps {
                 withSonarQubeEnv('My SonarQube Server') { // If you have configured more than one global server connection, you can specify its name
                     sh "${scannerHome}/bin/sonar-scanner"
