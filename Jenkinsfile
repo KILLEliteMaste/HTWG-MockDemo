@@ -25,8 +25,8 @@ pipeline {
             }
             steps {
                 withSonarQubeEnv(installationName: 'SonarQube', credentialsId: 'SonarQube Server') { // If you have configured more than one global server connection, you can specify its name
-                     println ${env.SONAR_HOST_URL} 
-                     println ${env.SONAR_AUTH_TOKEN} 
+                     println "${env.SONAR_HOST_URL}" 
+                     println "${env.SONAR_AUTH_TOKEN}" 
                     sh "${scannerHome}/bin/sonar-scanner"
                 }
             }
