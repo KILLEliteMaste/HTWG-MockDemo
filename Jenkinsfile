@@ -36,9 +36,6 @@ pipeline {
                 always {
                     junit 'target/failsafe-reports/**/*.xml'
                 }
-                success {
-                    archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
-                }
             }
         }
 
