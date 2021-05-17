@@ -1,25 +1,46 @@
 pipeline {
-    agent {
-        docker {
-            image 'maven:3.8.1-adoptopenjdk-11'
-            args '-v /root/.m2:/root/.m2'
-        }
+    agent any
+    tools {
+        maven 'Maven'
+        jdk 'JDK 11'
     }
     stages {
-        stage('Build') {
+        // Run unit test in all cases
+        stage('Unit Test') {
             steps {
-                sh 'mvn -B -DskipTests clean package'
-            }
-        }
-        stage('Test') { 
-            steps {
-                sh 'mvn test' 
+                    echo BRANCH_NAME
+                    sh 'mvn -Dmaven.test.failure.ignore=true clean test site'
+                    jacoco()
+                    recordIssues(tools: [checkStyle(), findBugs(useRankAsPriority: true), pmdParser()])
             }
             post {
                 always {
-                    junit 'target/surefire-reports/*.xml' 
+                    junit 'target/surefire-reports/**/*.xml'
                 }
             }
         }
+
+        // Build involves integration tests and upload to artifactory
+        stage('Build') {
+            when {
+                anyOf {
+                    branch 'master'
+                    branch 'development'
+                }
+            }
+            steps {
+                    echo BRANCH_NAME
+                    sh 'mvn -Dbuild.number=$BUILD_NUMBER clean install site' 
+            }
+            post {
+                always {
+                    junit 'target/failsafe-reports/**/*.xml'
+                }
+                success {
+                    archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+                }
+            }
+        }
+
     }
 }
