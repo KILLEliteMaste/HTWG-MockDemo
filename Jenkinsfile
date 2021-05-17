@@ -3,7 +3,7 @@ pipeline {
     tools {
         maven 'Maven'
         jdk 'JDK 11'
-        scannerHome 'SonarQube Scanner';
+        scannerHome 'SonarQube Scanner'
     }
     stages {
         // Run unit test in all cases
