@@ -19,25 +19,5 @@ pipeline {
                 }
             }
         }
-
-        // Build involves integration tests and upload to artifactory
-        stage('Build') {
-            when {
-                anyOf {
-                    branch 'master'
-                    branch 'development'
-                }
-            }
-            steps {
-                    echo BRANCH_NAME
-                    sh 'mvn -Dbuild.number=$BUILD_NUMBER clean install site' 
-            }
-            post {
-                always {
-                    junit 'target/failsafe-reports/**/*.xml'
-                }
-            }
-        }
-
     }
 }
