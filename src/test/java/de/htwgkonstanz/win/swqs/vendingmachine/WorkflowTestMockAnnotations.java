@@ -19,6 +19,8 @@ public class WorkflowTestMockAnnotations {
     Dispenser d;
     @Mock
     PriceTable p;
+    @Mock
+    Display display;
 
     Workflow w;
 
@@ -28,7 +30,7 @@ public class WorkflowTestMockAnnotations {
         when(d.checkItem(eq(1))).thenReturn(false);
         when(d.checkItem(eq(2))).thenReturn(true);
         when(p.getPrice(anyInt())).thenReturn(new BigDecimal("1"));
-        w = new Workflow(d, c, p);
+        w = new Workflow(d, c, p, display);
     }
 
     @Test
@@ -42,6 +44,8 @@ public class WorkflowTestMockAnnotations {
         // verify
         verify(c).dispenseCoins(new BigDecimal(1));
         verify(d).dispenseItem(2);
+        verify(display, times(1)).setMessage("2");
+        verify(display, times(1)).setMessage("0");
         assertEquals(0, code);
     }
 
@@ -55,6 +59,8 @@ public class WorkflowTestMockAnnotations {
 
         // verify
         assertEquals(-2, code);
+        verify(display, times(1)).setMessage("1");
+        verify(display, times(1)).setMessage("Fach leer: 1");
     }
 
     @Test
@@ -67,6 +73,8 @@ public class WorkflowTestMockAnnotations {
 
         // verify
         assertEquals(-1, code);
+        verify(display, times(1)).setMessage("0.5");
+        verify(display, times(1)).setMessage("Nicht genug Guthaben. Item Preis: 1. Balance: 0.5");
     }
 
     @Test
@@ -81,6 +89,8 @@ public class WorkflowTestMockAnnotations {
         verify(c, never()).dispenseCoins(any(BigDecimal.class));
         verify(d).dispenseItem(2);
         assertEquals(0, code);
+        verify(display, times(1)).setMessage("1");
+        verify(display, times(1)).setMessage("0");
     }
 
     @Test
@@ -94,5 +104,7 @@ public class WorkflowTestMockAnnotations {
         // verify
         verify(c, times(1)).dispenseCoins(new BigDecimal("1"));
         verify(d, never()).dispenseItem(anyInt());
+        verify(display, times(1)).setMessage("1");
+        verify(display, times(1)).setMessage("0");
     }
 }

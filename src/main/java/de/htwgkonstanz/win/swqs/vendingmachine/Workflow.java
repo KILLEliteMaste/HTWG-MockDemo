@@ -10,11 +10,13 @@ public class Workflow {
     private Dispenser dispenser;
     private CoinDeposit coinDeposit;
     private PriceTable priceTable;
+    private Display display;
 
-    public Workflow(Dispenser dispenser, CoinDeposit coinDeposit, PriceTable priceTable) {
+    public Workflow(Dispenser dispenser, CoinDeposit coinDeposit, PriceTable priceTable, Display display) {
         this.dispenser = dispenser;
         this.coinDeposit = coinDeposit;
         this.priceTable = priceTable;
+        this.display = display;
     }
 
     /**
@@ -33,7 +35,7 @@ public class Workflow {
      * Cancel transaction and refund coins.
      */
     public void cancel() {
-        refundCoins (balance);
+        refundCoins(balance);
         workflowState = WorkflowState.IDLE;
     }
 
@@ -42,20 +44,24 @@ public class Workflow {
      *
      * @param item the id of the selected item.
      * @return code  0 if the selection was successful,
-     *              -1 if price is higher than inserted coins,
-     *              -2 if selection is empty.
+     * -1 if price is higher than inserted coins,
+     * -2 if selection is empty.
      */
     public int select(int item) {
         BigDecimal preis = priceTable.getPrice(item);
         if (balance.compareTo(preis) < 0) {
+            display.setMessage("Nicht genug Guthaben. Item Preis: " + preis + ". Balance: " + balance);
             return -1;
         }
         boolean isEmpty = !dispenser.checkItem(item);
         if (isEmpty) {
+            display.setMessage("Fach leer: " + item);
             return -2;
         }
         BigDecimal change = balance.subtract(preis);
-        if (change.intValue() > 0) {
+        balance = BigDecimal.ZERO;
+        display.setMessage(balance.toString());
+        if (change.doubleValue() > 0) {
             coinDeposit.dispenseCoins(change);
         }
         dispenser.dispenseItem(item);
@@ -66,14 +72,17 @@ public class Workflow {
     protected void refundCoins(BigDecimal amount) {
         coinDeposit.dispenseCoins(amount);
         balance = BigDecimal.ZERO;
+        display.setMessage(balance.toString());
     }
 
     protected void setBalance(BigDecimal amount) {
         this.balance = amount;
+        display.setMessage(amount.toString());
     }
 
     protected void addToBalance(BigDecimal amount) {
         this.balance = this.balance.add(amount);
+        display.setMessage(balance.toString());
     }
 
     protected BigDecimal getBalance() {

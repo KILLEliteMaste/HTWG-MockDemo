@@ -16,36 +16,36 @@ public class WorkflowBackdoorTest {
     @BeforeEach
     public void setupPriceTable() {
         priceTable = new PriceTableImpl();
-        priceTable.setPrice(1,new BigDecimal("1"));
-        priceTable.setPrice(2,new BigDecimal("1.10"));
-        priceTable.setPrice(3,new BigDecimal("1"));
-        priceTable.setPrice(4,new BigDecimal("1"));
-        priceTable.setPrice(5,new BigDecimal("2.50"));
-        priceTable.setPrice(6,new BigDecimal("3.50"));
-        priceTable.setPrice(7,new BigDecimal("4"));
-        priceTable.setPrice(8,new BigDecimal("2.80"));
-        priceTable.setPrice(9,new BigDecimal("2.50"));
-        priceTable.setPrice(10,new BigDecimal("2"));
-        priceTable.setPrice(11,new BigDecimal("1.30"));
-        priceTable.setPrice(12,new BigDecimal("2.30"));
-        priceTable.setPrice(13,new BigDecimal("2.50"));
-        priceTable.setPrice(14,new BigDecimal("1.10"));
-        priceTable.setPrice(15,new BigDecimal("3"));
-        priceTable.setPrice(16,new BigDecimal("1.10"));
-        priceTable.setPrice(17,new BigDecimal("2.50"));
-        priceTable.setPrice(18,new BigDecimal("0.90"));
-        priceTable.setPrice(19,new BigDecimal("3.50"));
-        priceTable.setPrice(20,new BigDecimal("1.30"));
-        priceTable.setPrice(21,new BigDecimal("2.50"));
-        priceTable.setPrice(22,new BigDecimal("1"));
-        priceTable.setPrice(23,new BigDecimal("1.80"));
-        priceTable.setPrice(24,new BigDecimal("2.30"));
+        priceTable.setPrice(1, new BigDecimal("1"));
+        priceTable.setPrice(2, new BigDecimal("1.10"));
+        priceTable.setPrice(3, new BigDecimal("1"));
+        priceTable.setPrice(4, new BigDecimal("1"));
+        priceTable.setPrice(5, new BigDecimal("2.50"));
+        priceTable.setPrice(6, new BigDecimal("3.50"));
+        priceTable.setPrice(7, new BigDecimal("4"));
+        priceTable.setPrice(8, new BigDecimal("2.80"));
+        priceTable.setPrice(9, new BigDecimal("2.50"));
+        priceTable.setPrice(10, new BigDecimal("2"));
+        priceTable.setPrice(11, new BigDecimal("1.30"));
+        priceTable.setPrice(12, new BigDecimal("2.30"));
+        priceTable.setPrice(13, new BigDecimal("2.50"));
+        priceTable.setPrice(14, new BigDecimal("1.10"));
+        priceTable.setPrice(15, new BigDecimal("3"));
+        priceTable.setPrice(16, new BigDecimal("1.10"));
+        priceTable.setPrice(17, new BigDecimal("2.50"));
+        priceTable.setPrice(18, new BigDecimal("0.90"));
+        priceTable.setPrice(19, new BigDecimal("3.50"));
+        priceTable.setPrice(20, new BigDecimal("1.30"));
+        priceTable.setPrice(21, new BigDecimal("2.50"));
+        priceTable.setPrice(22, new BigDecimal("1"));
+        priceTable.setPrice(23, new BigDecimal("1.80"));
+        priceTable.setPrice(24, new BigDecimal("2.30"));
     }
 
     private Dispenser createDispenser() {
         return new Dispenser() {
             public boolean checkItem(int item) {
-                return (item < 4) || ((item % 4) == 1) ;
+                return (item < 4) || ((item % 4) == 1);
             }
 
             public void dispenseItem(int item) {
@@ -61,7 +61,14 @@ public class WorkflowBackdoorTest {
     public void testNotEnoughMoney() {
         // dispenser and coin deposit have dummy values
         Dispenser dispenser = createDispenser();
-        Workflow workflow = new Workflow(dispenser, null, priceTable);
+        Workflow workflow = new Workflow(dispenser, null, priceTable, new Display() {
+            String msg = "";
+
+            @Override
+            public void setMessage(String message) {
+                msg = message;
+            }
+        });
 
         // execute
         workflow.coinsIn(new BigDecimal("1"));
@@ -79,7 +86,14 @@ public class WorkflowBackdoorTest {
         Dispenser dispenser = createDispenser();
 
         // dispenser and coin deposit have dummy values
-        Workflow workflow = new Workflow(dispenser, null, priceTable);
+        Workflow workflow = new Workflow(dispenser, null, priceTable, new Display() {
+            String msg = "";
+
+            @Override
+            public void setMessage(String message) {
+                msg = message;
+            }
+        });
 
         // execute
         workflow.coinsIn(new BigDecimal("2"));

@@ -1,6 +1,7 @@
 package de.htwgkonstanz.win.swqs.vendingmachine;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.math.BigDecimal;
 
@@ -13,10 +14,11 @@ public class WorkflowTestMockSimple {
     public void testNotInMachine() {
         // Setup
         Dispenser d = mock(Dispenser.class);
+        Display display = mock(Display.class);
         when(d.checkItem(eq(1))).thenReturn(false);
         PriceTable p = mock(PriceTable.class);
         when(p.getPrice(anyInt())).thenReturn(new BigDecimal("1"));
-        Workflow w = new Workflow(d, mock(CoinDeposit.class), p);
+        Workflow w = new Workflow(d, mock(CoinDeposit.class), p, display);
 
         // execute
         w.coinsIn(new BigDecimal("1"));
